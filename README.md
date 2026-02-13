@@ -1,141 +1,341 @@
-# Hospital Management System
+<a id="top"></a>
 
-### _YouTube Video Link: [https://youtu.be/SwE4mxQxhEI](https://youtu.be/SwE4mxQxhEI)_
+<h1 align="center">🏥 Hospital Management System - Technical Debt Analysis</h1>
 
-## Description-
-   In this Project we aim to solve the traditional issues of hospital management. The existing system provided paper based solution for keeping OPD records of patients and hospital staff, but it gives overload to Doctor, Receptionist and Administrator.  The main issues were inappropriate data keeping, time wastage in storage, retrieval also patients were unable to understand the prescription etc. These issues are solved by providing a separate user account for doctors and other staff. Keeping each patient’s data separate and track previous visits in a single click. 
-   
-   This project uses MYSQL as backend and is developed in Java so it provides features such as platform independence, high performance and security. It is a web application which mainly uses SpringMVC and Hibernate frameworks. 
-   
-   It provides some enhanced features such as: an easy interface to add, remove employees as well as it provides PDF of prescription. Thus, reducing need to manually write  and  sign  by doctor.  <br>
-  #### PPT Presentation: [click here](https://drive.google.com/file/d/1L6zUvNPXV4mYNnl2zLYyxvyz2RwoUt1G/view?usp=sharing)  <br>
-  #### Project SRS: [click here](https://drive.google.com/file/d/11DQDP_ZN2h7Cq3hiIRw3pCzPhR_VCL8p/view?usp=sharing)  <br>
-  #### Project Report: [click here](https://drive.google.com/file/d/128Qn3pqBFj84w6OXBSwuWXYpag_Wn0dT/view?usp=sharing)
-  
-## Steps to configure this HMS web-application on your system:
+<p align="center">
+Technical documentation focused on analyzing, identifying, and improving technical debt within the Hospital Management System.
+</p>
 
-1. To import this project to your system, you need to first install below softwares: 
-   - Eclipse for Java EE Developers and Tomcat server. You can refer this video: https://youtu.be/9iHKCnxUWqQ
-   - MySQL Workbench. You can refer this video: https://youtu.be/OM4aZJW_Ojs
+<hr>
 
-2. Then get the code from this GitHub repository on your system. You can clone this repository or download as zip file.
+<h2>📋 Table of Contents</h2>
 
-3. Choose 'import existing maven project' option in eclipse. 
-<br> You can search for those steps online, just search 'how to import existing maven project in eclipse'. 
+<ul>
+  <li><a href="#project-description">📌 Project Description</a></li>
+  <li><a href="#technical-debt">🔍 Technical Debt Analysis</a></li>
+  <li><a href="#code-smells">🚨 Code Smells Identified</a></li>
+  <li><a href="#refactoring">🔧 Refactoring Techniques</a></li>
+  <li><a href="#implementation">✅ Implementation Plan</a></li>
+  <li><a href="#git-workflow">📊 Git Workflow</a></li>
+  <li><a href="#configuration">🛠 Project Configuration</a></li>
+  <li><a href="#technologies">💻 Technologies</a></li>
+  <li><a href="#contributing">📝 Contributing</a></li>
+</ul>
 
-4. Then import the database files in your MySQL database. Database files are provided [here](https://github.com/rid17pawar/HospitalManagement/tree/master/databaseFiles%20and%20demoLoginCredentials/hospitaldb).
-<br> You can refer this video: https://youtu.be/9icY7xwXbJo
+<hr>
 
-5. You can then run this web-application on your Tomcat server. For login use the credentials provided in [this](https://github.com/rid17pawar/HospitalManagement/blob/master/databaseFiles%20and%20demoLoginCredentials/loginPasswordsForDemo.txt) file. (Select correct role and fill the Username and Password) 
-<br> If you want to add more users just login as admin and choose 'add employee' option and fill all the details. It will create new employee with his own login credentials. The Aadhar no. will be the default password and Empid will be the username.
+<h2 id="project-description">📌 Project Description</h2>
 
-## Technologies Used-
+<p>
+A web-based system designed to replace traditional paper-based hospital workflows with a secure and efficient digital platform.
+</p>
 
-![techStack](https://github.com/rid17pawar/HospitalManagement/assets/47048717/0b9e95e2-b3f0-41bb-b76f-75c275273389)
+<h3>Main Features</h3>
 
-### 1. Front end Technologies:
-  - HTML
-  - CSS
-  - Bootstrap
-  - JavaScript
-  
-### 2. Back end Technologies:
-  - SpringMVC 
-  - Hibernate
-  
-### 3. Database:
-  - MySQL
-  
-### 4. Project management tool:
-  - Maven
-  
-### 5. Webserver:
-  - Apache Tomcat
-  
+<ul>
+<li>Patient and staff management</li>
+<li>Automatic PDF prescription generation</li>
+<li>OPD queue management</li>
+<li>Role-based modules for doctors, receptionists, and administrators</li>
+</ul>
 
-## Issues that proposed system overcomes-
-   - It is digital system rather than paper based.
-   - Inappropriate data keeping (receptionist used register for patients entry and doctor used prescription pad).
-   - Time wastage in data storage and retrieval.
-   - Human error possibility in maintainance.
-   - Patient's were unable to understand prescriptions due to handwriting issue.
-   - Durability issues (data may lost if prescriptions goes missing).
+<h3>📄 Original Documentation</h3>
 
+<ul>
+<li><a href="https://drive.google.com/file/d/1L6zUvNPXV4mYNnl2zLYyxvyz2RwoUt1G/view?usp=sharing">PPT Presentation</a></li>
+<li><a href="https://drive.google.com/file/d/11DQDP_ZN2h7Cq3hiIRw3pCzPhR_VCL8p/view?usp=sharing">Project SRS</a></li>
+<li><a href="https://drive.google.com/file/d/128Qn3pqBFj84w6OXBSwuWXYpag_Wn0dT/view?usp=sharing">Project Report</a></li>
+<li><a href="https://youtu.be/SwE4mxQxhEI">Demo Video</a></li>
+</ul>
 
-## Features-
-  1. Doctor module:
-      - Seperate accounts for doctors
-      - Each patients previous visits history is easily to access.
-      - Doctor can generate prescription and it will be automatically sent to receptionist.
-      - Doctor can remove patient from OPD queue.
-      
-  2. Receptionist module:
-      - Register/add new patient's info.
-      - Modify patients personal details
-      - Search existing patient by name/ mobile no./ PID/ aadhar no.
-      - Remove patient from OPD queue.
-      - Take print of prescriptions.
-      
-  3. Administrator module:
-      - Add new employee for following roles,
-                      i) Doctor
-                     ii) Receptionist
-                    iii) Admin (another one)
-      - Remove/edit existing employee. 
-      - Displays currently active employees in system.
-      
-  4. Password Encryption:
-      - *_Bcrypt Encoding_* is used for password encryption. Bcrypt is a password hashing function designed by Niels Provos and David Mazières. It is based on the Blowfish cipher. Bcrypt uses adaptive hash algorithm to store password. BCrypt internally generates a random salt while encoding passwords and hence it is obvious to get different encoded results for the same string. But one common thing is that everytime it generates a String of length 60.
+<p align="right"><a href="#top">⬆ Back to top</a></p>
 
+<hr>
 
-## Snapshots-
+<h2 id="technical-debt">🔍 Technical Debt Analysis</h2>
 
-1. Homepage
+<details>
+<summary><strong>Analysis Methodology</strong></summary>
 
-![homepg](https://github.com/rid17pawar/HospitalManagement/assets/47048717/ed1a7bcd-a327-4703-8954-f647d405272a)
+<br>
 
-2. Login page
+<ul>
+<li>Manual source code review</li>
+<li>Anti-pattern detection</li>
+<li>Architecture evaluation</li>
+<li>SOLID principles validation</li>
+<li>Spring MVC & Hibernate best practices</li>
+</ul>
 
-![loginpg](https://github.com/rid17pawar/HospitalManagement/assets/47048717/87120956-e508-4d5b-b48f-c823f5e29851)
+<p><strong>TODO:</strong> Analyze the codebase and document technical debt issues.</p>
 
-3. Administrator Dashboard
+</details>
 
-![adminDashboard](https://github.com/rid17pawar/HospitalManagement/assets/47048717/5223bfda-cd29-40f8-aa5b-988972d529fe)
+<p align="right"><a href="#top">⬆ Back to top</a></p>
 
-![adminAll](https://github.com/rid17pawar/HospitalManagement/assets/47048717/88587d2b-515a-4912-8b76-469b68cb167f)
+<hr>
 
-4. Doctor Dashboard
+<h2 id="code-smells">🚨 Code Smells Identified</h2>
 
-![doctorObservation](https://github.com/rid17pawar/HospitalManagement/assets/47048717/00dfe2c3-8802-48e9-8de7-daa71a1a89b4)
+<details open>
+<summary><strong>Example: Tight Coupling</strong></summary>
 
-![doctorPrescription](https://github.com/rid17pawar/HospitalManagement/assets/47048717/1ff1d095-3ed9-434d-8ed5-5d9228d489d9)
+<br>
 
-5. Receptionist Dashboard
+<p><strong>Description:</strong> Controllers are tightly coupled with concrete service and DAO implementations.</p>
 
-![receptionistSearch](https://github.com/rid17pawar/HospitalManagement/assets/47048717/dcbce603-9d5a-47b7-9138-1221458f323e)
+<p><strong>Location:</strong> <code>DoctorController.java</code></p>
 
-![receptionistAdd](https://github.com/rid17pawar/HospitalManagement/assets/47048717/5f987507-0510-4edc-adc2-545f69123291)
+<pre>
+public class DoctorController {
+    private DoctorServiceImpl doctorService;
+    private PatientDAOImpl patientDAO;
+}
+</pre>
 
-## System Diagrams
+<p><strong>Impact:</strong></p>
 
-1. Usecase Diagram
+<ul>
+<li>Harder unit testing</li>
+<li>Low flexibility</li>
+<li>Violates Dependency Inversion Principle</li>
+</ul>
 
-![Usecase Diagram](https://github.com/rid17pawar/HospitalManagement/assets/47048717/53f12eb6-0789-42ed-8ec9-569b9895ac82)
+<p><strong>Recommendation:</strong> Use interfaces with dependency injection.</p>
 
-2. Activity Diagram
+</details>
 
-![Activity Diagram](https://github.com/rid17pawar/HospitalManagement/assets/47048717/1d506cd6-4add-413f-a4cc-159a16c98760)
+<br>
 
-3. Class Diagram
+<details>
+<summary><strong>Common Code Smells To Evaluate</strong></summary>
 
-![Class Diagram](https://github.com/rid17pawar/HospitalManagement/assets/47048717/1e52efac-4641-4ee0-a079-2da921c996dd)
+<ul>
+<li>God Classes</li>
+<li>Long Methods</li>
+<li>Code Duplication</li>
+<li>Poor Exception Handling</li>
+<li>Hardcoded Values</li>
+<li>N+1 Queries</li>
+<li>Missing DTOs</li>
+<li>Lack of Logging</li>
+<li>Missing Unit Tests</li>
+</ul>
 
-4. Sequence Diagram
+</details>
 
-![Sequence Diagram](https://github.com/rid17pawar/HospitalManagement/assets/47048717/b0ecdef9-e21c-44d0-a9d9-6273d91e8aaf)
+<p align="right"><a href="#top">⬆ Back to top</a></p>
 
-5. State Diagram
+<hr>
 
-![State Diagram](https://github.com/rid17pawar/HospitalManagement/assets/47048717/c60747f3-ba73-4611-bc46-ce6413799cf4)
+<h2 id="refactoring">🔧 Refactoring Techniques Proposed</h2>
 
-### Thank You !
+<details open>
+<summary><strong>Extract Method Refactoring</strong></summary>
+
+<br>
+
+<p><strong>Purpose:</strong> Break long methods into smaller cohesive methods.</p>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Improved readability</li>
+<li>Better testability</li>
+<li>Higher maintainability</li>
+<li>Increased reuse</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>Other Planned Refactoring Techniques</strong></summary>
+
+<ul>
+<li>Extract Class</li>
+<li>Introduce Parameter Object</li>
+<li>Replace Conditional with Polymorphism</li>
+<li>Repository Pattern</li>
+<li>DTO Pattern</li>
+<li>Dependency Injection</li>
+<li>Global Exception Handling</li>
+<li>Bean Validation</li>
+<li>Query Optimization</li>
+</ul>
+
+</details>
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<hr>
+
+<h2 id="implementation">✅ Implementation Plan</h2>
+
+<h3>Phase 1 – Low Risk</h3>
+
+<ul>
+<li>Logging integration</li>
+<li>Constants classes</li>
+<li>Bean validation</li>
+<li>Code documentation</li>
+</ul>
+
+<h3>Phase 2 – Service Refactoring</h3>
+
+<ul>
+<li>Extract long methods</li>
+<li>DTO implementation</li>
+<li>Mapper creation</li>
+</ul>
+
+<h3>Phase 3 – Architecture Improvements</h3>
+
+<ul>
+<li>Repository pattern</li>
+<li>Global exception handlers</li>
+<li>Hibernate optimization</li>
+</ul>
+
+<h3>Phase 4 – Testing & Security</h3>
+
+<ul>
+<li>Unit tests</li>
+<li>Integration tests</li>
+<li>Security review</li>
+<li>External configuration</li>
+</ul>
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<hr>
+
+<h2 id="git-workflow">📊 Git Workflow</h2>
+
+<pre>
+git checkout main
+git pull
+git checkout -b feature/technical-debt-fixes
+git add .
+git commit -m "refactor: improve service separation"
+git push origin feature/technical-debt-fixes
+</pre>
+
+<h3>Commit Convention</h3>
+
+<ul>
+<li>feat – New feature</li>
+<li>fix – Bug fix</li>
+<li>refactor – Code improvement</li>
+<li>docs – Documentation</li>
+<li>test – Testing</li>
+<li>perf – Performance improvement</li>
+</ul>
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<hr>
+
+<h2 id="configuration">🛠 Project Configuration</h2>
+
+<details>
+<summary><strong>Prerequisites</strong></summary>
+
+<ul>
+<li>JDK 8+</li>
+<li>Apache Tomcat</li>
+<li>MySQL</li>
+<li>Maven</li>
+<li>Eclipse IDE</li>
+</ul>
+
+</details>
+
+<details>
+<summary><strong>Run Steps</strong></summary>
+
+<pre>
+git clone &lt;repository-url&gt;
+cd HospitalManagement
+</pre>
+
+<p>Import Maven project → Configure database → Run on Tomcat</p>
+
+</details>
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<hr>
+
+<h2 id="technologies">💻 Technologies Used</h2>
+
+<h3>Frontend</h3>
+<ul>
+<li>HTML5</li>
+<li>CSS3</li>
+<li>Bootstrap</li>
+<li>JavaScript</li>
+<li>jQuery</li>
+</ul>
+
+<h3>Backend</h3>
+<ul>
+<li>Java</li>
+<li>Spring MVC</li>
+<li>Hibernate</li>
+<li>Spring Security</li>
+<li>BCrypt</li>
+</ul>
+
+<h3>Database</h3>
+<ul>
+<li>MySQL</li>
+</ul>
+
+<h3>Tools</h3>
+<ul>
+<li>Maven</li>
+<li>Git</li>
+<li>Postman</li>
+</ul>
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<h2 id="contributing">📝 Contributing</h2>
+
+<ol>
+<li>Fork the repository</li>
+<li>Create feature branch</li>
+<li>Commit changes</li>
+<li>Push branch</li>
+<li>Create Pull Request</li>
+</ol>
+
+<h3>Code Guidelines</h3>
+
+<ul>
+<li>Follow Java naming conventions</li>
+<li>Document public methods</li>
+<li>Write tests</li>
+<li>Single Responsibility Principle</li>
+<li>Dependency Injection</li>
+</ul>
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<h2 align="center">🤝 Team & Contact</h2>
+
+<p align="center">
+Create a GitHub issue for suggestions or questions.
+</p>
+
+<hr>
+
+<p align="center">
+<strong>Made with ❤️ to improve hospital management</strong>
+</p>
+
+<p align="center">
+<em>Technical Debt Documentation – February 2026</em>
+</p>
