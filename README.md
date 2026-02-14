@@ -8,6 +8,53 @@ Technical documentation focused on analyzing, identifying, and improving technic
 
 <hr>
 
+<h2 align="center">👥 Development Team</h2>
+
+<p align="center">
+This technical debt analysis and refactoring proposal was developed by:
+</p>
+
+<br>
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/AndresSu2342">
+        <img src="https://github.com/AndresSu2342.png" width="100px;" alt="César Andrés Borray Suarez"/>
+        <br />
+        <sub><b>César Andrés Borray Suarez</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/JuanEstebanMedina">
+        <img src="https://github.com/JuanEstebanMedina.png" width="100px;" alt="Juan Esteban Medina Rivas"/>
+        <br />
+        <sub><b>Juan Esteban Medina Rivas</b></sub>
+      </a>
+    </td>
+  
+  </tr>
+  <tr>
+  <td align="center">
+      <a href="https://github.com/LauraRo166">
+        <img src="https://github.com/LauraRo166.png" width="100px;" alt="Laura Daniela Rodríguez Sánchez"/>
+        <br />
+        <sub><b>Laura Daniela Rodríguez Sánchez</b></sub>
+      </a>
+    </td>
+
+  <td align="center">
+      <a href="https://github.com/hakki17">
+        <img src="https://github.com/hakki17.png" width="100px;" alt="Maria Paula Sánchez Macías"/>
+        <br />
+        <sub><b>Maria Paula Sánchez Macías</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+<hr>
+
 <h2>📋 Table of Contents</h2>
 
 <ul>
