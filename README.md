@@ -77,36 +77,6 @@ A web-based system designed to replace traditional paper-based hospital workflow
 
 <h2 id="code-smells">🚨 Code Smells Identified</h2>
 
-<details open>
-<summary><strong>Example: Tight Coupling</strong></summary>
-
-<br>
-
-<p><strong>Description:</strong> Controllers are tightly coupled with concrete service and DAO implementations.</p>
-
-<p><strong>Location:</strong> <code>DoctorController.java</code></p>
-
-<pre>
-public class DoctorController {
-    private DoctorServiceImpl doctorService;
-    private PatientDAOImpl patientDAO;
-}
-</pre>
-
-<p><strong>Impact:</strong></p>
-
-<ul>
-<li>Harder unit testing</li>
-<li>Low flexibility</li>
-<li>Violates Dependency Inversion Principle</li>
-</ul>
-
-<p><strong>Recommendation:</strong> Use interfaces with dependency injection.</p>
-
-</details>
-
-<br>
-
 <details>
 <summary><strong>Common Code Smells To Evaluate</strong></summary>
 
@@ -123,6 +93,315 @@ public class DoctorController {
 </ul>
 
 </details>
+
+<br>
+
+<details open>
+<summary><strong>1. Tight Coupling</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Multiple Controllers and DAOs</p>
+
+<p><strong>Description:</strong> Controllers are directly coupled to concrete implementations instead of interfaces.</p>
+
+<p><strong>Example:</strong></p>
+
+<pre>
+@Autowired
+DeleteOpdDao dao1;
+
+@Autowired
+OpdDetailsDao dao2;
+
+@Autowired
+PatientPrescriptionDao dao3;
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Difficult unit testing (mocks cannot be easily created)</li>
+<li>Violates Dependency Inversion Principle (SOLID)</li>
+<li>Low flexibility and maintainability</li>
+<li>Hard to replace implementations</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>2. God Class</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> LoginDao.java</p>
+
+<p><strong>Description:</strong> The LoginDao class contains multiple unrelated responsibilities (validation, logging, self-injection).</p>
+
+<pre>
+@Autowired
+LoginDao infoLog;  // Self-injection - bad practice
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Violates Single Responsibility Principle (SRP)</li>
+<li>Difficult to test and maintain</li>
+<li>Confusing class purpose</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>3. Poor Exception Handling</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Multiple Controllers and DAOs</p>
+
+<p><strong>Examples:</strong></p>
+
+<pre>
+// Incorrect null check and generic exception
+if (!e1.getEid().equals(null)) {
+    ...
+} else {
+    throw new Exception();
+}
+</pre>
+
+<pre>
+// Exception swallowed
+catch (Exception e) {
+    infoLog.logActivities("in DeleteOpdDao-delete: " + e);
+    return 0;
+}
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Loss of error information</li>
+<li>Difficult debugging</li>
+<li>Poor production traceability</li>
+<li>Bad user experience</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>4. Commented Out Code</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> AddPatientDao.java, LoginDao.java</p>
+
+<pre>
+// try {
+//     ...
+// } catch (Exception e) {
+//     return false;
+// }
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Code clutter</li>
+<li>Confusion for developers</li>
+<li>Version control should manage history, not source files</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>5. Hardcoded Values / Magic Numbers</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Multiple classes</p>
+
+<pre>
+q1.setParameter("s", 0);
+q1.setParameter("s", 1);
+
+if (i == 1) { ... }
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Not self-documenting</li>
+<li>Error-prone</li>
+<li>Difficult to maintain</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>6. Missing DTOs</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Entire system</p>
+
+<p><strong>Description:</strong> JPA entities are exposed directly to the presentation layer.</p>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Possible LazyInitializationException</li>
+<li>Tight coupling between layers</li>
+<li>Exposure of sensitive data</li>
+<li>Difficult API versioning</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>7. Lack of Proper Logging</strong></summary>
+
+<br>
+
+<pre>
+public void logActivities(String s) {
+    // System.out.println("@"+s);
+}
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>No production logs</li>
+<li>No log levels (INFO, DEBUG, ERROR)</li>
+<li>Impossible debugging</li>
+<li>No external configuration</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>8. Inconsistent Null Checking</strong></summary>
+
+<br>
+
+<pre>
+if (!e1.getEid().equals(null))  // Incorrect
+if (!patients.equals(null))    // Incorrect
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Possible NullPointerException</li>
+<li>Confusing inverted logic</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>9. Primitive DTOs / Array Misuse</strong></summary>
+
+<br>
+
+<pre>
+String[] temp = new String[3];
+temp[0] = ...
+temp[1] = ...
+temp[2] = ...
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Not type-safe</li>
+<li>Hard to understand</li>
+<li>Index-based errors</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>10. Potential N+1 Query Problem</strong></summary>
+
+<br>
+
+<pre>
+for (Opd opd : l1) {
+    temp[1] = dao2.searchDoctorAssigned(did);
+}
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Performance degradation</li>
+<li>Multiple unnecessary DB queries</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>11. Unused Imports and Variables</strong></summary>
+
+<br>
+
+<pre>
+import com.project.entity.Login;
+
+int i = 0, j = 0;
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Code clutter</li>
+<li>Reduced readability</li>
+<li>Poor code hygiene</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>12. Missing Unit Tests</strong></summary>
+
+<br>
+
+<p><strong>Observation:</strong> No test files were found in the repository.</p>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>No quality guarantee</li>
+<li>Risky refactoring</li>
+<li>Hard to detect regressions</li>
+</ul>
+
+</details>
+
 
 <p align="right"><a href="#top">⬆ Back to top</a></p>
 
