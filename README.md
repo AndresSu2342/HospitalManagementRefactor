@@ -8,6 +8,53 @@ Technical documentation focused on analyzing, identifying, and improving technic
 
 <hr>
 
+<h2 align="center">👥 Development Team</h2>
+
+<p align="center">
+This technical debt analysis and refactoring proposal was developed by:
+</p>
+
+<br>
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/AndresSu2342">
+        <img src="https://github.com/AndresSu2342.png" width="100px;" alt="César Andrés Borray Suarez"/>
+        <br />
+        <sub><b>César Andrés Borray Suarez</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/JuanEstebanMedina">
+        <img src="https://github.com/JuanEstebanMedina.png" width="100px;" alt="Juan Esteban Medina Rivas"/>
+        <br />
+        <sub><b>Juan Esteban Medina Rivas</b></sub>
+      </a>
+    </td>
+  
+  </tr>
+  <tr>
+  <td align="center">
+      <a href="https://github.com/LauraRo166">
+        <img src="https://github.com/LauraRo166.png" width="100px;" alt="Laura Daniela Rodríguez Sánchez"/>
+        <br />
+        <sub><b>Laura Daniela Rodríguez Sánchez</b></sub>
+      </a>
+    </td>
+
+  <td align="center">
+      <a href="https://github.com/hakki17">
+        <img src="https://github.com/hakki17.png" width="100px;" alt="Maria Paula Sánchez Macías"/>
+        <br />
+        <sub><b>Maria Paula Sánchez Macías</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+<hr>
+
 <h2>📋 Table of Contents</h2>
 
 <ul>
@@ -77,36 +124,6 @@ A web-based system designed to replace traditional paper-based hospital workflow
 
 <h2 id="code-smells">🚨 Code Smells Identified</h2>
 
-<details open>
-<summary><strong>Example: Tight Coupling</strong></summary>
-
-<br>
-
-<p><strong>Description:</strong> Controllers are tightly coupled with concrete service and DAO implementations.</p>
-
-<p><strong>Location:</strong> <code>DoctorController.java</code></p>
-
-<pre>
-public class DoctorController {
-    private DoctorServiceImpl doctorService;
-    private PatientDAOImpl patientDAO;
-}
-</pre>
-
-<p><strong>Impact:</strong></p>
-
-<ul>
-<li>Harder unit testing</li>
-<li>Low flexibility</li>
-<li>Violates Dependency Inversion Principle</li>
-</ul>
-
-<p><strong>Recommendation:</strong> Use interfaces with dependency injection.</p>
-
-</details>
-
-<br>
-
 <details>
 <summary><strong>Common Code Smells To Evaluate</strong></summary>
 
@@ -124,26 +141,37 @@ public class DoctorController {
 
 </details>
 
-<p align="right"><a href="#top">⬆ Back to top</a></p>
-
-<hr>
-
-<h2 id="refactoring">🔧 Refactoring Techniques Proposed</h2>
+<br>
 
 <details open>
-<summary><strong>Extract Method Refactoring</strong></summary>
+<summary><strong>1. Tight Coupling</strong></summary>
 
 <br>
 
-<p><strong>Purpose:</strong> Break long methods into smaller cohesive methods.</p>
+<p><strong>Location:</strong> Multiple Controllers and DAOs</p>
 
-<p><strong>Benefits:</strong></p>
+<p><strong>Description:</strong> Controllers are directly coupled to concrete implementations instead of interfaces.</p>
+
+<p><strong>Example:</strong></p>
+
+<pre>
+@Autowired
+DeleteOpdDao dao1;
+
+@Autowired
+OpdDetailsDao dao2;
+
+@Autowired
+PatientPrescriptionDao dao3;
+</pre>
+
+<p><strong>Impact:</strong></p>
 
 <ul>
-<li>Improved readability</li>
-<li>Better testability</li>
-<li>Higher maintainability</li>
-<li>Increased reuse</li>
+<li>Difficult unit testing (mocks cannot be easily created)</li>
+<li>Violates Dependency Inversion Principle (SOLID)</li>
+<li>Low flexibility and maintainability</li>
+<li>Hard to replace implementations</li>
 </ul>
 
 </details>
@@ -151,7 +179,286 @@ public class DoctorController {
 <br>
 
 <details>
-<summary><strong>Other Planned Refactoring Techniques</strong></summary>
+<summary><strong>2. God Class</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> LoginDao.java</p>
+
+<p><strong>Description:</strong> The LoginDao class contains multiple unrelated responsibilities (validation, logging, self-injection).</p>
+
+<pre>
+@Autowired
+LoginDao infoLog;  // Self-injection - bad practice
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Violates Single Responsibility Principle (SRP)</li>
+<li>Difficult to test and maintain</li>
+<li>Confusing class purpose</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>3. Poor Exception Handling</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Multiple Controllers and DAOs</p>
+
+<p><strong>Examples:</strong></p>
+
+<pre>
+// Incorrect null check and generic exception
+if (!e1.getEid().equals(null)) {
+    ...
+} else {
+    throw new Exception();
+}
+</pre>
+
+<pre>
+// Exception swallowed
+catch (Exception e) {
+    infoLog.logActivities("in DeleteOpdDao-delete: " + e);
+    return 0;
+}
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Loss of error information</li>
+<li>Difficult debugging</li>
+<li>Poor production traceability</li>
+<li>Bad user experience</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>4. Commented Out Code</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> AddPatientDao.java, LoginDao.java</p>
+
+<pre>
+// try {
+//     ...
+// } catch (Exception e) {
+//     return false;
+// }
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Code clutter</li>
+<li>Confusion for developers</li>
+<li>Version control should manage history, not source files</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>5. Hardcoded Values / Magic Numbers</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Multiple classes</p>
+
+<pre>
+q1.setParameter("s", 0);
+q1.setParameter("s", 1);
+
+if (i == 1) { ... }
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Not self-documenting</li>
+<li>Error-prone</li>
+<li>Difficult to maintain</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>6. Missing DTOs</strong></summary>
+
+<br>
+
+<p><strong>Location:</strong> Entire system</p>
+
+<p><strong>Description:</strong> JPA entities are exposed directly to the presentation layer.</p>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Possible LazyInitializationException</li>
+<li>Tight coupling between layers</li>
+<li>Exposure of sensitive data</li>
+<li>Difficult API versioning</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>7. Lack of Proper Logging</strong></summary>
+
+<br>
+
+<pre>
+public void logActivities(String s) {
+    // System.out.println("@"+s);
+}
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>No production logs</li>
+<li>No log levels (INFO, DEBUG, ERROR)</li>
+<li>Impossible debugging</li>
+<li>No external configuration</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>8. Inconsistent Null Checking</strong></summary>
+
+<br>
+
+<pre>
+if (!e1.getEid().equals(null))  // Incorrect
+if (!patients.equals(null))    // Incorrect
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Possible NullPointerException</li>
+<li>Confusing inverted logic</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>9. Primitive DTOs / Array Misuse</strong></summary>
+
+<br>
+
+<pre>
+String[] temp = new String[3];
+temp[0] = ...
+temp[1] = ...
+temp[2] = ...
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Not type-safe</li>
+<li>Hard to understand</li>
+<li>Index-based errors</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>10. Potential N+1 Query Problem</strong></summary>
+
+<br>
+
+<pre>
+for (Opd opd : l1) {
+    temp[1] = dao2.searchDoctorAssigned(did);
+}
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Performance degradation</li>
+<li>Multiple unnecessary DB queries</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>11. Unused Imports and Variables</strong></summary>
+
+<br>
+
+<pre>
+import com.project.entity.Login;
+
+int i = 0, j = 0;
+</pre>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Code clutter</li>
+<li>Reduced readability</li>
+<li>Poor code hygiene</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>12. Missing Unit Tests</strong></summary>
+
+<br>
+
+<p><strong>Observation:</strong> No test files were found in the repository.</p>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>No quality guarantee</li>
+<li>Risky refactoring</li>
+<li>Hard to detect regressions</li>
+</ul>
+
+</details>
+
+
+<p align="right"><a href="#top">⬆ Back to top</a></p>
+
+<hr>
+
+<h2 id="refactoring">🔧 Refactoring Techniques Proposed</h2>
+
+<details>
+
+<summary><strong>Planned Refactoring Techniques</strong></summary>
 
 <ul>
 <li>Extract Class</li>
@@ -166,6 +473,384 @@ public class DoctorController {
 </ul>
 
 </details>
+
+<br>
+
+<details open>
+<summary><strong>1: Extract Interface</strong></summary>
+
+<br>
+
+<p><strong>Apply to:</strong> All DAOs</p>
+
+<p><strong>Before:</strong></p>
+
+<pre>
+@Autowired
+DeleteOpdDao dao1;
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+public interface OpdService {
+    int delete(String pid);
+}
+
+@Autowired
+private OpdService opdService;
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Reduces coupling</li>
+<li>Improves testability with mocks</li>
+<li>Complies with Dependency Inversion Principle</li>
+<li>Encourages clean architecture</li>
+<li>Improves flexibility for future implementations</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>2: Replace Magic Numbers with Constants</strong></summary>
+
+<br>
+
+<p><strong>Apply to:</strong> Entire system</p>
+
+<p><strong>Before:</strong></p>
+
+<pre>
+q1.setParameter("s", 0);
+if(i == 1) { }
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+public class OpdStatus {
+    public static final int DONE = 0;
+    public static final int PENDING = 1;
+    public static final int PRINTING = 2;
+}
+
+q1.setParameter("s", OpdStatus.DONE);
+if(i == OperationResult.SUCCESS) { }
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Self-documenting code</li>
+<li>Improved readability</li>
+<li>Reduced risk of logical errors</li>
+<li>Centralized status management</li>
+<li>Easier future modifications</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>3: Extract Method</strong></summary>
+
+<br>
+
+<p><strong>Apply to:</strong> Long DAO methods</p>
+
+<p><strong>Before (AddPatientDao.java):</strong></p>
+
+<pre>
+public boolean add(Patient p1) {
+    // 30+ lines of code
+    // Save patient
+    // Increment ID
+    // Multiple responsibilities
+}
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+public boolean add(Patient p1) {
+    savePatient(p1);
+    incrementPatientId();
+    return true;
+}
+
+private void savePatient(Patient p1) { /* ... */ }
+private void incrementPatientId() { /* ... */ }
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Improved readability</li>
+<li>Single Responsibility compliance</li>
+<li>Better unit testing</li>
+<li>Easier debugging</li>
+<li>Encourages code reuse</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>4: Introduce Service Layer</strong></summary>
+
+<br>
+
+<p><strong>Apply to:</strong> Controllers calling DAOs directly</p>
+
+<p><strong>Before:</strong></p>
+
+<pre>
+@Controller
+public class DeleteOpdController {
+
+    @Autowired DeleteOpdDao dao1;
+    @Autowired OpdDetailsDao dao2;
+
+    public ModelAndView delete(String pid) {
+        dao1.delete(pid);
+        dao2.opdQueue();
+    }
+}
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+@Controller
+public class OpdController {
+
+    @Autowired
+    private OpdService opdService;
+
+    public ModelAndView delete(String pid) {
+        opdService.deleteOpd(pid);
+    }
+}
+
+@Service
+public class OpdServiceImpl implements OpdService {
+    // Business logic here
+}
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Clear separation of concerns</li>
+<li>Better layering (Controller → Service → DAO)</li>
+<li>Centralized business logic</li>
+<li>Improved maintainability</li>
+<li>Easier testing of business logic</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>5: Replace Conditional Logic with Strategy Pattern</strong></summary>
+
+<br>
+
+<p><strong>Apply to:</strong> OPD state logic</p>
+
+<p><strong>Description:</strong> Replace large conditional blocks depending on status with strategy classes.</p>
+
+<p><strong>Example Structure:</strong></p>
+
+<pre>
+public interface OpdStateStrategy {
+    void process(Opd opd);
+}
+
+public class PendingState implements OpdStateStrategy {
+    public void process(Opd opd) {
+        // Logic for pending
+    }
+}
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Eliminates complex conditional blocks</li>
+<li>Open/Closed Principle compliance</li>
+<li>Easier extension for new states</li>
+<li>Cleaner and more scalable design</li>
+<li>Improved maintainability</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>6: Introduce DTOs</strong></summary>
+
+<br>
+
+<p><strong>Before:</strong></p>
+
+<pre>
+mv.addObject("employee", e1); // Direct entity exposure
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+EmployeeDTO dto = employeeMapper.toDTO(e1);
+mv.addObject("employee", dto);
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Prevents LazyInitializationException</li>
+<li>Avoids exposing sensitive data</li>
+<li>Better API versioning support</li>
+<li>Clear separation between layers</li>
+<li>Improved security and encapsulation</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>7: Replace Custom Logging with SLF4J / Logback</strong></summary>
+
+<br>
+
+<p><strong>Before:</strong></p>
+
+<pre>
+infoLog.logActivities("in DeleteOpdDao-delete: got= " + pid);
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+private static final Logger logger =
+    LoggerFactory.getLogger(DeleteOpdDao.class);
+
+logger.debug("Deleting OPD with pid: {}", pid);
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Structured logging</li>
+<li>Log levels support (INFO, DEBUG, ERROR)</li>
+<li>External configuration capability</li>
+<li>Production-ready logging</li>
+<li>Better monitoring and observability</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>8: Null Object Pattern</strong></summary>
+
+<br>
+
+<p><strong>Apply to:</strong> Null validations</p>
+
+<p><strong>Before:</strong></p>
+
+<pre>
+if(!e1.getEid().equals(null)) { }
+</pre>
+
+<p><strong>After:</strong></p>
+
+<pre>
+if(e1 != null && StringUtils.isNotEmpty(e1.getEid())) { }
+// Or use Optional<Employee>
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Prevents NullPointerException</li>
+<li>Cleaner validation logic</li>
+<li>Improved robustness</li>
+<li>More readable conditions</li>
+<li>Safer null handling strategy</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>9: Repository Pattern</strong></summary>
+
+<br>
+
+<p><strong>Description:</strong> Introduce a repository layer between services and data access logic.</p>
+
+<pre>
+public interface PatientRepository extends JpaRepository&lt;Patient, Long&gt; {
+}
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Encapsulates persistence logic</li>
+<li>Improves abstraction</li>
+<li>Reduces boilerplate DAO code</li>
+<li>Better integration with Spring Data</li>
+<li>Cleaner separation of layers</li>
+</ul>
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>10: Global Exception Handler</strong></summary>
+
+<br>
+
+<p><strong>Implementation:</strong></p>
+
+<pre>
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ModelAndView handleNotFound(EntityNotFoundException ex) {
+        // Centralized exception handling
+    }
+}
+</pre>
+
+<p><strong>Benefits:</strong></p>
+
+<ul>
+<li>Centralized error handling</li>
+<li>Cleaner controllers</li>
+<li>Consistent error responses</li>
+<li>Improved maintainability</li>
+<li>Better user experience</li>
+</ul>
+
+</details>
+
 
 <p align="right"><a href="#top">⬆ Back to top</a></p>
 
